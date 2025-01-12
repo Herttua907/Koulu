@@ -4,28 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Azure Chat App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.2/signalr.min.js"></script>
 </head>
 <body>
     <h1>Tervetuloa Chat-sovellukseen!</h1>
-    <p>Tämä on staattinen web-sivusto, jota käytetään Azure SignalR -chattiprojektiin.</p>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.2/signalr.min.js"></script>
-<script>
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://chat-signal-service.service.signalr.net/client/?hub=chat")
-        .build();
+    <p>Tämä on staattinen web-sivusto, jota käytetään Azure SignalR -chatprojektiin.</p>
 
-    // Käynnistä SignalR-yhteys
-    connection.start()
-        .then(() => console.log("Connected to SignalR!"))
-        .catch(err => console.error("SignalR connection failed:", err));
+    <!-- Viestien näyttö -->
+    <div id="messages"></div>
 
-    // Kuuntele uusia viestejä
-    connection.on("newMessage", (message) => {
-        console.log("Uusi viesti:", message);
-        const messagesDiv = document.getElementById("messages");
-        messagesDiv.innerHTML += `<p>${message}</p>`;
-    });
-</script>
+    <!-- SignalR-yhteys -->
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://chat-signal-service.service.signalr.net/client/?hub=chat") // Vaihda oma SignalR-endpoint tähän, jos tarvitaan
+            .build();
 
+        // Käynnistä SignalR-yhteys
+        connection.start()
+            .then(() => console.log("Connected to SignalR!"))
+            .catch(err => console.error("SignalR connection failed:", err));
+
+        // Kuuntele uusia viestejä
+        connection.on("newMessage", (message) => {
+            console.log("Uusi viesti:", message);
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += `<p>${message}</p>`;
+        });
+    </script>
 </body>
 </html>
